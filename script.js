@@ -1,4 +1,5 @@
-let mySchedule = [{}];
+let mySchedule = JSON.parse(localStorage.getItem("Appointment")) || [];
+mySchedule[24] = "";
 let month = [
   "January",
   "February",
@@ -25,21 +26,34 @@ let week = [
 let time = new Date();
 document.querySelector("#currentDay").innerHTML =
   week[time.getDay()] + ", " + month[time.getMonth()] + " " + time.getDate();
-let appointment = "Click to set Schedule";
-console.log(localStorage.appointment);
 
+let appointment;
+
+//let testVariable = JSON.parse(localStorage.getItem("Appointment"));
 function main() {
   console.log("@main");
 
   for (let i = 9; i < 18; ++i) {
+    // Find the previously appointed appointment
+    if (i > 8 && i < 18) {
+      appointment = mySchedule[i];
+      if (mySchedule[i] === null) {
+        appointment = " - Click here to set Schedule - ";
+      }
+    } else {
+      appointment = " - Click here to set Schedule - ";
+    }
+    if (appointment === undefined) {
+      appointment = " - Click here to set Schedule - ";
+    }
+
+    //
     displayTimeBlocks(i, appointment);
   }
   updateTextInTimeBlock();
 }
 
 function displayTimeBlocks(i, appointment) {
-  console.log("@displayTimeBlocks");
-
   let hourEl = document.createElement("div");
   let pastEl = document.createElement("textarea");
   let presentEl = document.createElement("textarea");
@@ -133,10 +147,7 @@ function updateTextInTimeBlock() {
     document.querySelector("#" + newId).innerHTML = newText;
 
     // SAVING TO ARRAY OF OBJECTS mySchedule
-    let appointment = {
-      id: idNum,
-      text: newText,
-    };
+    let appointment = newText;
     mySchedule[idNum] = appointment;
     localStorage.setItem("Appointment", JSON.stringify(mySchedule));
   });
